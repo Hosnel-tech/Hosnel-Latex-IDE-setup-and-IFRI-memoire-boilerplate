@@ -67,7 +67,7 @@
 % Configuration des espacements et formatage
 \renewcommand{\cftbeforetoctitleskip}{2cm}
 \renewcommand{\cftaftertoctitleskip}{1.5cm}
-\renewcommand{\cfttoctitlefont}{\Large\bfseries\color{tocblue}\centering}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries\color{tocblue}}
 \renewcommand{\cftchapfont}{\bfseries\color{tocblue}}
 \renewcommand{\cftsecfont}{\color{black}}
 \renewcommand{\cftsubsecfont}{\color{tocgray}}
@@ -170,6 +170,7 @@
 \setcounter{tocdepth}{3}
 \chapter*{Table des matières}
 \phantomsection
+\addcontentsline{toc}{chapter}{Table des matières}
 \makeatletter
 \@starttoc{toc}
 \makeatother
