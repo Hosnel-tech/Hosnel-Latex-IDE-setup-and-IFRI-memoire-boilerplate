@@ -1,14 +1,20 @@
-\newacronym{acro}{acronyme}{Def acronyme}
+% Définition des acronymes avec lien manuel uniquement sur le texte "[voir glossaire]"
+\newacronym{api}{API}{Application Programming Interface \protect\hyperlink{glo:api_g}{\textcolor{RoyalBlue}{[voir glossaire]}}}
+\newacronym{css}{CSS}{Cascading Style Sheets \protect\hyperlink{glo:css_g}{\textcolor{RoyalBlue}{[voir glossaire]}}}
+\newacronym{html}{HTML}{HyperText Markup Language \protect\hyperlink{glo:html_g}{\textcolor{RoyalBlue}{[voir glossaire]}}}
+\newacronym{laravel}{LARAVEL}{PHP backend Framework \protect\hyperlink{glo:laravel_g}{\textcolor{RoyalBlue}{[voir glossaire]}}}
+\newacronym{mysql}{MYSQL}{Database Management System \protect\hyperlink{glo:mysql_g}{\textcolor{RoyalBlue}{[voir glossaire]}}}
+\newacronym{uml}{UML}{Unified Modeling Language \protect\hyperlink{glo:uml_g}{\textcolor{RoyalBlue}{[voir glossaire]}}}
 
-\newglossaryentry{acroglo}{type=\acronymtype, name={acroglo}, description={A la fois dans les deux\glsadd{acroglog}},see=[Glossaire:]{acroglog}
-}
+% Définition des entrées du glossaire
+\newglossaryentry{api_g}{name=API, description={Une API (Application Programming Interface) est un ensemble de règles et de protocoles permettant à des applications logicielles de communiquer entre elles. Elle facilite l'intégration et l'interopérabilité entre différents systèmes.}}
 
-\newglossaryentry{acroglog}{name=acroglo, description={A la fois dans les deux.}}
+\newglossaryentry{css_g}{name=CSS, description={Les Cascading Style Sheets (CSS) sont un langage de feuille de style utilisé pour définir l'apparence et la mise en page des pages web (couleurs, polices, marges, disposition, etc.).}}
 
-\newglossaryentry{glossaire}
- {
- name=glossaire,
- description={Ici se trouve le contenu du glossaire}
- }
- 
- 
+\newglossaryentry{html_g}{name=HTML, description={Le HyperText Markup Language (HTML) est le langage standard utilisé pour structurer et représenter le contenu des pages web, en définissant titres, paragraphes, liens, images et autres éléments.}}
+
+\newglossaryentry{laravel_g}{name=Laravel, description={Laravel est un framework PHP open source pour le développement backend. Il fournit une architecture MVC, une gestion simplifiée des bases de données, et de nombreux outils intégrés pour accélérer le développement d'applications web.}}
+
+\newglossaryentry{mysql_g}{name=MySQL, description={MySQL est un système de gestion de bases de données relationnelles (SGBDR) très répandu, utilisé pour stocker et gérer efficacement des données. Il est open source et souvent combiné avec PHP dans les applications web.}}
+
+\newglossaryentry{uml_g}{name=UML, description={Le Unified Modeling Language (UML) est un langage de modélisation graphique standardisé, utilisé en ingénierie logicielle pour représenter visuellement la structure et le comportement des systèmes.}}

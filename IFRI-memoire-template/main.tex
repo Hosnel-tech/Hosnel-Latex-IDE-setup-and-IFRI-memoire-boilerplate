@@ -12,7 +12,7 @@
 % \usepackage{lscape}
 
 \typeMemoire{Diplôme de Licence en Informatique}
-\optionFormation{Internet & Multimédia}
+\optionFormation{Internet \& Multimédia}
 \etudiant{Mahudjro Hosnel Jurès \textbf{AZAMMAN}}
 \titreDuMemoire{Application web pour la gestion des travaux dirigés des candidats aux examens du CEP, BEPC et BAC de la commune de Cotonou}%Implémention pour une meilleure sécurité dans les réseau LAN sous IPv6 // Proposition: Identification des vulnérabilités dans un reseau LAN IPv6 et mesures pour une meilleure sécurité.
 
@@ -120,6 +120,7 @@
 
 % Liste des acronymes
 \setglossarystyle{altlist}
+\glsaddall
 \printglossary[title=Liste des acronymes, toctitle=Liste des acronymes, type=\acronymtype]
 \cleardoublepage
 
@@ -128,6 +129,7 @@
 \setcounter{page}{1}
 
 % Glossaire
+\renewcommand{\glsnamefont}[1]{\textbf{#1}}
 \printglossary[type=main, title=Glossaire, toctitle=Glossaire]
 \cleardoublepage
 

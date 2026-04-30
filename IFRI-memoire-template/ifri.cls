@@ -39,7 +39,7 @@
             ]{hyperref}
 
 %\usepackage[nonumberlist, acronym, toc]{glossaries} %Mise en forme du glossaire
-\usepackage[acronym, toc]{glossaries} %Mise en forme du glossaire
+\usepackage[acronym, toc, nonumberlist, nohypertypes={main,acronym}]{glossaries} %Mise en forme du glossaire
 %\usepackage[nonumberlist,style=altlist]{glossaries}
 % \renewcommand*{\glsgroupskip}{}
 % \renewcommand*{\glsseeformat}[3][\seename]{%
