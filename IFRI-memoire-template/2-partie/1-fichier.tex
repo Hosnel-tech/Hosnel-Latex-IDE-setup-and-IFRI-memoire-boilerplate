@@ -90,36 +90,133 @@ et de corriger rapidement les dysfonctionnements avant l'intégration
 finale au front-end.
 
 % ============================================================
-\section{Principales actions des utilisateurs}
+\section{Modèle fonctionnel et acteurs du système}
 % ============================================================
 
-Deux profils interagissent avec la plateforme : 
-l'\textbf{Administrateur} et l'\textbf{Agent administratif}.
+La robustesse de la plateforme repose sur une séparation stricte des responsabilités, suivant le principe du \textit{Role-Based Access Control} (RBAC). Cette approche garantit que chaque acteur n'intervient que dans son périmètre de compétence, assurant ainsi l'intégrité des données financières et pédagogiques. Le système identifie trois profils pivots : l'\textbf{Administrateur}, l'\textbf{Enseignant} et le \textbf{Comptable}.
 
-\subsection{Actions de l'Administrateur}
+% ----------------------------
+\subsection{Cycle de vie et Workflow des Travaux Dirigés}
+% ----------------------------
 
-L'administrateur peut :
+Le cœur métier de l'application est la gestion des Travaux Dirigés (TD). Un TD n'est pas une entité statique ; il suit un cycle de vie rigoureux composé de quatre états de transition, garantissant une traçabilité complète de la planification au paiement final.
 
+\begin{enumerate}
+    \item \textbf{Phase de Planification} : L'enseignant initie le processus en soumettant un TD. L'entité est alors dans l'état \texttt{En attente}, ce qui signifie qu'elle est enregistrée mais n'a pas encore de valeur légale ou pédagogique validée.
+    \item \textbf{Phase d'Approbation} : L'Administrateur agit comme régulateur. Sa validation fait passer le TD à l'état \texttt{En cours}. C'est cette étape qui autorise officiellement l'exécution de la prestation.
+    \item \textbf{Phase de Certification (Service Fait)} : Une fois la séance terminée, l'enseignant atteste l'exécution par un marquage de fin. Le statut passe à \texttt{Terminé}. Cette action déclenche automatiquement une notification vers le service comptable pour la mise en paiement.
+    \item \textbf{Phase de Liquidation} : Le Comptable clôture le cycle en traitant le paiement. Le passage à l'état \texttt{Payé} verrouille l'entité pour toute modification ultérieure, assurant la cohérence des états financiers.
+\end{enumerate}
+
+Le tableau~\ref{tab:statuts} synthétise ces transitions d'états.
+
+\begin{table}[H]
+\centering
+\caption{Matrice de transition des états d'un TD}
+\label{tab:statuts}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|l|l|}
+\hline
+\rowcolor{gray!20} \textbf{Statut du TD} & \textbf{Événement déclencheur} & \textbf{Acteur Responsable} \\
+\hline
+\texttt{En attente} & Initialisation et soumission & Enseignant \\
+\texttt{En cours}   & Revue et approbation métier  & Administrateur \\
+\texttt{Terminé}    & Certification du "Service Fait" & Enseignant \\
+\texttt{Payé}       & Règlement et clôture comptable & Comptable \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=2.5cm,
+        state/.style={
+            rectangle, 
+            rounded corners=5pt, 
+            minimum width=2.8cm, 
+            minimum height=1cm,
+            text centered, 
+            draw=RoyalBlue, 
+            fill=RoyalBlue!5, 
+            thick,
+            font=\small\bfseries\sffamily
+        },
+        arrow/.style={
+            thick,
+            ->,
+            >=stealth,
+            RoyalBlue
+        }
+    ]
+        % Nodes
+        \node (attente) [state] {En attente};
+        \node (cours) [state, right of=attente, xshift=1.2cm] {En cours};
+        \node (termine) [state, right of=cours, xshift=1.2cm] {Terminé};
+        \node (paye) [state, right of=termine, xshift=1.2cm] {Payé};
+        
+        % Arrows with labels
+        \draw [arrow] (attente) -- node[above, font=\tiny, color=black] {Approbation} (cours);
+        \draw [arrow] (cours) -- node[above, font=\tiny, color=black] {Clôture} (termine);
+        \draw [arrow] (termine) -- node[above, font=\tiny, color=black] {Règlement} (paye);
+    \end{tikzpicture}
+    \caption{Diagramme de flux du cycle de vie d'un TD (modélisation native)}
+    \label{fig:workflow}
+\end{figure}
+
+% ----------------------------
+\subsection{Périmètre d'action des intervenants}
+% ----------------------------
+
+\subsubsection{L'Administrateur (Superviseur Système)}
+En tant qu'autorité centrale, l'Administrateur assure la gouvernance de la plateforme. Son rôle dépasse la simple gestion technique pour englober la validation des flux métier :
 \begin{itemize}
-    \item gérer son compte ;
-    \item créer et configurer les sessions de travaux dirigés ;
-    \item gérer les paiements et valider les transactions ;
-    \item générer et exporter les rapports financiers ;
-    \item gérer les comptes et les droits des agents ;
-    \item consulter le tableau de bord.
+    \item \textbf{Gouvernance des accès} : Validation des identités (enseignants) et provisionnement des comptes comptables.
+    \item \textbf{Régulation pédagogique} : Arbitrage sur la pertinence des TD soumis.
+    \item \textbf{Pilotage stratégique} : Exploitation du tableau de bord global pour le suivi des indicateurs de performance (KPI) de la commune.
 \end{itemize}
 
-\subsection{Actions de l'Agent administratif}
-
-L'agent peut :
-
+\subsubsection{L'Enseignant (Opérateur Pédagogique)}
+L'enseignant est l'acteur source de la donnée. Son workflow est conditionné par une étape d'approbation d'accès (\textit{Onboarding}) :
 \begin{itemize}
-    \item gérer son compte ;
-    \item consulter les sessions de travaux dirigés ;
-    \item enregistrer et suivre les paiements ;
-    \item consulter les rapports disponibles ;
-    \item se déconnecter.
+    \item \textbf{Gestion des prestations} : Création et suivi déclaratif des sessions de TD.
+    \item \textbf{Certification} : Responsabilité de la déclaration de fin d'exécution.
+    \item \textbf{Suivi personnel} : Visibilité sur son historique de prestations et l'état d'avancement de ses émoluments.
 \end{itemize}
+
+\subsubsection{Le Comptable (Agent Financier)}
+Le comptable intervient exclusivement en aval du processus. Son rôle est de transformer une prestation certifiée en une opération financière :
+\begin{itemize}
+    \item \textbf{Liquidation} : Traitement des dossiers au statut \texttt{Terminé}.
+    \item \textbf{Ordonnancement} : Génération des états de paiement pour les institutions bancaires.
+    \item \textbf{Audit} : Consultation de l'historique financier pour garantir la transparence des flux.
+\end{itemize}
+
+% ----------------------------
+\subsection{Synthèse des privilèges (Matrice de droits)}
+% ----------------------------
+
+La matrice suivante (Tableau~\ref{tab:droits}) offre une vue synoptique de la distribution des privilèges au sein du système, utilisant les symboles \ding{51} (Autorisé) et \ding{55} (Interdit).
+
+\begin{table}[H]
+\centering
+\caption{Matrice des droits d'accès par profil}
+\label{tab:droits}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|p{6cm}|c|c|c|}
+\hline
+\rowcolor{gray!20} \textbf{Fonctionnalités} & \textbf{Admin} & \textbf{Enseignant} & \textbf{Comptable} \\
+\hline
+Validation des comptes enseignants    & \ding{51} & \ding{55} & \ding{55} \\
+Ouverture d'une session de TD         & \ding{55} & \ding{51} & \ding{55} \\
+Approbation métier des TD             & \ding{51} & \ding{55} & \ding{55} \\
+Certification du service fait         & \ding{55} & \ding{51} & \ding{55} \\
+Traitement financier (Paiement)       & \ding{55} & \ding{55} & \ding{51} \\
+Extraction de rapports financiers     & \ding{51} & \ding{55} & \ding{51} \\
+Pilotage et KPI globaux               & \ding{51} & \ding{55} & \ding{55} \\
+\hline
+\end{tabular}
+\end{table}
 
 % ============================================================
 \section{Conception UML}
@@ -128,8 +225,8 @@ L'agent peut :
 \subsection{Diagramme de cas d'utilisation}
 
 Le diagramme de cas d'utilisation permet de représenter les principales 
-interactions des deux acteurs primaires --- l'Administrateur et l'Agent 
-administratif --- avec le système. Nous avons ainsi réalisé le diagramme 
+interactions des trois acteurs pivots --- l'Administrateur, l'Enseignant 
+et le Comptable --- avec le système. Nous avons ainsi réalisé le diagramme 
 présenté à la figure~\ref{fig:usecase}.
 
 \begin{figure}[H]
