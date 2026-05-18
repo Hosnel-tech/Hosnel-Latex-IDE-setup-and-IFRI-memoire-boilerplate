@@ -1,21 +1,412 @@
+%! TeX root = ../main.tex
 \addcontentsline{toc}{section}{Introduction}
 \section*{Introduction}
 
-\section{-}
-blablabla
+Ce chapitre présente les résultats obtenus dans le cadre du développement
+de l'application web de gestion des travaux dirigés de la commune de
+Cotonou. Il expose les différentes interfaces mises en place, les
+fonctionnalités implémentées ainsi que les interactions entre les trois
+profils utilisateurs et le système. L'objectif est de permettre au
+lecteur de comprendre les apports concrets de la solution développée,
+d'en analyser les limites et d'envisager les perspectives d'évolution.
 
-\section{-}
-\begin{algorithm}
-	\KwData{$x$}
-	\KwResult{$r$}
-	\Begin{
-		\If{$x \neq 0$}{
-			$ r \leftarrow 1/x$\;
-		}
-	}
-	
-	\caption{Inverse}\label{alg:Inverse}
-\end{algorithm}
+% ============================================================
+\section{Présentation des résultats}
+% ============================================================
 
+% ----------------------------
+\subsection{Page de connexion}
+% ----------------------------
+
+La figure~\ref{fig:login} présente la page de connexion de l'application.
+Elle constitue le point d'entrée unique du système et permet à chaque
+utilisateur --- administrateur, enseignant ou comptable --- de
+s'authentifier de manière sécurisée à l'aide de son adresse e-mail et
+de son mot de passe. L'accès est conditionné par la validation préalable
+du compte par l'administrateur. Tout compte en attente de validation se
+voit refuser l'accès. L'interface a été conçue de façon simple et épurée
+afin de faciliter une prise en main immédiate.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/login.png}
+    \caption{Page de connexion}
+    \label{fig:login}
+\end{figure}
+
+% ----------------------------
+\subsection{Tableau de bord de l'administrateur}
+% ----------------------------
+
+La figure~\ref{fig:dash_admin} présente le tableau de bord de
+l'administrateur. Il regroupe les principaux indicateurs de pilotage :
+le nombre de comptes enseignants en attente de validation, les travaux
+dirigés soumis, les TDs en cours d'exécution, les TDs terminés en
+attente de paiement et le nombre total de paiements effectués.
+Ce tableau de bord offre à l'administrateur une visibilité globale
+en temps réel sur l'ensemble des opérations du système.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/dashboard_admin.png}
+    \caption{Tableau de bord de l'administrateur}
+    \label{fig:dash_admin}
+\end{figure}
+
+% ----------------------------
+\subsection{Gestion des comptes enseignants}
+% ----------------------------
+
+La figure~\ref{fig:comptes} illustre la page de gestion des comptes
+enseignants. L'administrateur y consulte la liste de toutes les demandes
+d'inscription soumises par les enseignants. Pour chaque demande, il peut
+visualiser les informations du profil et décider de \textbf{valider}
+ou de \textbf{rejeter} le compte. En cas de validation, un e-mail de
+confirmation est automatiquement envoyé à l'enseignant, lui permettant
+de se connecter à la plateforme. En cas de rejet, une notification
+lui est également transmise.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/gestion_comptes.png}
+    \caption{Page de gestion des comptes enseignants}
+    \label{fig:comptes}
+\end{figure}
+
+% ----------------------------
+\subsection{Gestion et validation des travaux dirigés}
+% ----------------------------
+
+La figure~\ref{fig:gestion_td} présente la page de gestion des travaux
+dirigés côté administrateur. Elle regroupe l'ensemble des TDs soumis,
+filtrables par statut (\texttt{En attente}, \texttt{En cours},
+\texttt{Terminé}, \texttt{Payé}). Pour chaque TD en attente,
+l'administrateur peut consulter les informations détaillées --- niveau
+d'examen, date, description --- puis \textbf{valider} ou
+\textbf{rejeter} la demande. La validation fait passer le statut du TD
+de \texttt{En attente} à \texttt{En cours}, déclenchant une notification
+à l'enseignant concerné.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/gestion_td_admin.png}
+    \caption{Page de gestion et de validation des TDs}
+    \label{fig:gestion_td}
+\end{figure}
+
+% ----------------------------
+\subsection{Tableau de bord de l'enseignant}
+% ----------------------------
+
+La figure~\ref{fig:dash_enseignant} montre le tableau de bord personnel
+de l'enseignant. Il y visualise en un coup d'œil ses TDs actifs,
+leur statut en temps réel, ainsi que l'historique de ses paiements
+reçus. Ce tableau de bord a été volontairement simplifié afin
+de correspondre aux besoins opérationnels de l'enseignant, sans
+surcharger l'interface.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/dashboard_enseignant.png}
+    \caption{Tableau de bord de l'enseignant}
+    \label{fig:dash_enseignant}
+\end{figure}
+
+% ----------------------------
+\subsection{Création d'un travail dirigé}
+% ----------------------------
+
+La figure~\ref{fig:creation_td} illustre le formulaire de création d'un
+TD par l'enseignant. Après connexion, il soumet les informations
+nécessaires : niveau d'examen (CEP, BEPC ou BAC), date prévue,
+lieu et description. À la soumission, le TD est enregistré avec
+le statut \texttt{En attente} et une notification est envoyée à
+l'administrateur pour traitement. L'enseignant peut suivre
+l'évolution du statut de son TD directement depuis son tableau
+de bord.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/creation_td.png}
+    \caption{Formulaire de création d'un TD}
+    \label{fig:creation_td}
+\end{figure}
+
+% ----------------------------
+\subsection{Marquage de fin d'exécution d'un TD}
+% ----------------------------
+
+La figure~\ref{fig:terminer_td} présente la fonctionnalité permettant
+à l'enseignant de signaler la fin d'exécution d'un TD. Depuis la
+liste de ses TDs au statut \texttt{En cours}, il clique sur le bouton
+\og Marquer comme terminé \fg{}. Le statut du TD est alors mis à jour
+à \texttt{Terminé}, une notification est envoyée à l'enseignant en
+confirmation, et le TD apparaît immédiatement dans la file d'attente
+du comptable pour traitement du paiement.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/terminer_td.png}
+    \caption{Fonctionnalité de marquage de fin d'un TD}
+    \label{fig:terminer_td}
+\end{figure}
+
+% ----------------------------
+\subsection{Interface du comptable et traitement des paiements}
+% ----------------------------
+
+La figure~\ref{fig:comptable} montre l'interface dédiée au comptable.
+Elle lui présente la liste des TDs au statut \texttt{Terminé}, avec
+pour chaque entrée les informations de l'enseignant, le niveau du TD
+et la date de réalisation. Le comptable enregistre le traitement du
+paiement, ce qui fait passer le statut du TD à \texttt{Payé} et
+déclenche une notification à destination de l'enseignant concerné.
+Il peut également générer un fichier récapitulatif des paiements
+destiné aux banques partenaires.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/interface_comptable.png}
+    \caption{Interface du comptable — traitement des paiements}
+    \label{fig:comptable}
+\end{figure}
+
+% ----------------------------
+\subsection{Génération de rapports}
+% ----------------------------
+
+La figure~\ref{fig:rapports} illustre la page de génération de rapports
+disponible pour l'administrateur et le comptable. Elle permet de
+produire des états récapitulatifs filtrables par période, par niveau
+d'examen ou par statut de TD. Les rapports générés synthétisent les
+données financières et opérationnelles, facilitant ainsi le suivi
+des activités et la prise de décision des responsables municipaux.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/rapports.png}
+    \caption{Page de génération de rapports}
+    \label{fig:rapports}
+\end{figure}
+
+% ----------------------------
+\subsection{Version responsive de l'application}
+% ----------------------------
+
+La figure~\ref{fig:responsive} présente quelques interfaces de
+l'application sur support mobile, démontrant sa responsivité sur
+ordinateurs, tablettes et smartphones. L'interface s'adapte
+automatiquement à chaque support, offrant une expérience de navigation
+homogène et accessible depuis n'importe quel appareil connecté,
+sans installation préalable.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/responsive.png}
+    \caption{Interfaces responsive de l'application}
+    \label{fig:responsive}
+\end{figure}
+
+% ============================================================
+\section{Analyse, interprétation et discussion des résultats}
+% ============================================================
+
+Les résultats obtenus démontrent que l'application développée constitue
+une réponse fonctionnelle, cohérente et adaptée aux besoins de la
+commune de Cotonou en matière de gestion des travaux dirigés.
+La centralisation des opérations --- soumission et validation des TDs,
+suivi des statuts, traitement des paiements, génération de rapports
+--- élimine les risques inhérents aux méthodes manuelles et garantit
+une traçabilité complète de chaque opération.
+
+Le système de notifications automatiques à chaque étape du cycle de
+vie d'un TD renforce la communication entre les acteurs et réduit
+les délais de traitement. La séparation stricte des rôles (administrateur,
+enseignant, comptable) assure la sécurité des données et la conformité
+des accès aux périmètres fonctionnels définis.
+
+\textbf{Discussion et limites} \quad Bien que la solution réponde aux
+principaux objectifs fixés, certaines limites subsistent.
+\textit{Dépendance à Internet} : l'application ne fonctionnant pas hors
+ligne, une connectivité instable peut constituer une contrainte dans
+certaines zones de Cotonou.
+\textit{Envoi d'e-mails} : le système de notification par e-mail
+est conditionné par la configuration d'un serveur SMTP fiable,
+qui peut nécessiter une infrastructure complémentaire.
+\textit{Absence d'application mobile native} : bien que l'interface
+soit responsive, une application mobile native offrirait une ergonomie
+plus fluide et des notifications push en temps réel.
+Ces limites ne remettent pas en cause la pertinence de la solution
+mais constituent des pistes d'amélioration pour les versions futures.
+
+% ============================================================
+\section{Difficultés rencontrées et perspectives d'évolution}
+% ============================================================
+
+% ----------------------------
+\subsection{Difficultés rencontrées}
+% ----------------------------
+
+Le développement de cette application a présenté plusieurs défis
+techniques et méthodologiques :
+
+\begin{itemize}
+    \item la gestion du cycle de vie des statuts de TD et la
+    cohérence des transitions entre états (\texttt{En attente}
+    $\rightarrow$ \texttt{En cours} $\rightarrow$ \texttt{Terminé}
+    $\rightarrow$ \texttt{Payé}) ont nécessité une modélisation
+    rigoureuse des règles métier côté backend ;
+
+    \item la mise en place du système d'authentification multi-rôles
+    avec Laravel Sanctum et la gestion des droits d'accès différenciés
+    par profil ont demandé une attention particulière à la sécurité
+    applicative ;
+
+    \item la synchronisation en temps réel des notifications entre
+    les différents profils utilisateurs a représenté un défi
+    d'architecture, notamment pour garantir la réactivité du tableau
+    de bord sans rechargement de page.
+\end{itemize}
+
+% ----------------------------
+\subsection{Perspectives d'évolution}
+% ----------------------------
+
+Plusieurs axes d'amélioration sont envisagés pour les versions futures
+de l'application :
+
+\begin{itemize}
+    \item \textbf{Intégration du paiement mobile} : permettre au
+    système de déclencher directement des paiements via des
+    plateformes de Mobile Money (MTN, Moov), adaptées au contexte
+    béninois ;
+
+    \item \textbf{Application mobile native} : développer une
+    application Android et iOS pour améliorer l'accessibilité
+    et proposer des notifications push en temps réel ;
+
+    \item \textbf{Module statistique avancé} : enrichir le tableau
+    de bord avec des graphiques d'évolution, des comparaisons
+    inter-périodes et des exports PDF automatisés ;
+
+    \item \textbf{Système de rappels automatiques} : mettre en place
+    des relances automatiques par e-mail ou SMS pour les TDs en
+    attente de validation ou de paiement depuis un délai défini ;
+
+    \item \textbf{Extension à d'autres communes} : concevoir une
+    architecture multi-tenant permettant à plusieurs communes
+    béninoises d'utiliser la même plateforme de manière isolée
+    et sécurisée.
+\end{itemize}
+
+% ============================================================
+\section{Déploiement de la solution}
+% ============================================================
+
+L'application est conçue comme une solution web accessible à l'ensemble
+des services municipaux de la commune de Cotonou. Son déploiement repose
+sur une architecture cloud, permettant un accès simultané aux trois
+profils utilisateurs, sans installation locale et avec un stockage
+centralisé et sécurisé des données.
+
+\subsection*{Architecture de déploiement}
+
+Le choix d'une architecture distribuée permet de séparer le front-end
+et le back-end tout en garantissant la scalabilité :
+
+\begin{itemize}
+    \item \textbf{Front-end} développé avec \textbf{HTML5, CSS3 et
+    JavaScript}, hébergeable sur tout serveur web statique ou
+    plateforme cloud (Vercel, Netlify), offrant :
+    \begin{itemize}
+        \item un déploiement automatique après mise à jour,
+        \item un accès rapide depuis n'importe quel navigateur,
+        \item une interface responsive adaptée à tous les supports.
+    \end{itemize}
+
+    \item \textbf{Back-end} développé avec \textbf{Laravel} et
+    \textbf{MySQL}, hébergeable sur un serveur dédié ou cloud
+    (Render, DigitalOcean, OVH), permettant :
+    \begin{itemize}
+        \item un hébergement API flexible avec montée en charge
+        automatique,
+        \item une base de données centralisée pour la gestion
+        des opérations multi-utilisateurs,
+        \item des sauvegardes programmées et un monitoring intégré.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Sécurité des données}
+
+La solution implémente plusieurs mécanismes de protection essentiels
+pour un service institutionnel :
+
+\begin{itemize}
+    \item chiffrement SSL/TLS pour toutes les communications ;
+    \item authentification sécurisée par jetons (Laravel Sanctum) ;
+    \item gestion granulaire des droits d'accès selon les rôles
+    utilisateurs ;
+    \item sauvegardes automatisées dans le cloud ;
+    \item isolation logique des données par profil.
+\end{itemize}
+
+\subsection*{Coût estimatif de déploiement}
+
+\begin{table}[H]
+\centering
+\caption{Estimation des coûts mensuels d'hébergement}
+\label{tab:couts}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Poste} & \textbf{Coût mensuel estimé} \\
+\hline
+Hébergement front-end (Vercel/Netlify) & 0 -- 5\,000 FCFA \\
+Hébergement API + base de données      & 5\,000 -- 15\,000 FCFA \\
+Nom de domaine (annuel)                & $\approx$ 10\,000 FCFA/an \\
+Sauvegardes et monitoring              & 2\,000 -- 5\,000 FCFA \\
+\hline
+\textbf{Total mensuel estimé}          & \textbf{7\,000 -- 25\,000 FCFA} \\
+\hline
+\end{tabular}
+\end{table}
+
+Ce coût unique, mutualisé à l'échelle de la commune, reste
+très largement inférieur aux coûts opérationnels des méthodes
+manuelles actuelles (impression, archivage, erreurs de traitement).
+
+\subsection*{Évolutivité et montée en charge}
+
+Cette architecture cloud permet :
+
+\begin{itemize}
+    \item l'intégration progressive de nouveaux profils ou modules
+    sans refonte structurelle de l'application ;
+    \item la possibilité d'augmenter dynamiquement les ressources
+    serveur selon la charge ;
+    \item une future extension vers d'autres communes béninoises
+    via une architecture multi-tenant.
+\end{itemize}
+
+\subsection*{Conclusion}
+
+Le déploiement cloud de l'application rend la solution disponible
+à l'ensemble des services municipaux de la commune de Cotonou, sans
+matériel spécifique, tout en garantissant
+\textbf{sécurité, évolutivité, accessibilité et continuité de service}.
+
+% ============================================================
 \addcontentsline{toc}{section}{Conclusion}
 \section*{Conclusion}
+% ============================================================
+
+En somme, ce chapitre a présenté et analysé les résultats obtenus
+à travers la mise en œuvre de l'application web de gestion des
+travaux dirigés. Les interfaces et fonctionnalités exposées montrent
+que la solution répond efficacement aux besoins des services
+administratifs de la commune de Cotonou, en centralisant, automatisant
+et sécurisant l'ensemble du processus, depuis la soumission d'un TD
+jusqu'à son paiement. La discussion a mis en évidence certaines limites,
+qui restent secondaires et constituent des pistes d'évolution concrètes.
+Ce chapitre prépare ainsi la conclusion générale, qui propose une
+synthèse du travail accompli et des perspectives futures.
